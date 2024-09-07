@@ -192,25 +192,27 @@ int main() {
     memcpy(aes_key, alice_shared_secret, AES_KEYLEN);  // Use the shared secret for the key
     generate_random_bytes(iv, NONCE_LEN);  // Random IV for AES
 
+    // Get user input for the plaintext message
+    char plaintext[128];
+    printf("Enter the message to encrypt: ");
+    fgets(plaintext, sizeof(plaintext), stdin); // Read input from the user
+    plaintext[strcspn(plaintext, "\n")] = '\0';  // Remove trailing newline
+
     // Step 5: Encrypt the message using AES
-    unsigned char *plaintext = (unsigned char *)"Hello, this is a secret message!";
     unsigned char ciphertext[128];
-    int ciphertext_len = encrypt_aes(plaintext, strlen((char *)plaintext), aes_key, iv, ciphertext);
+    int ciphertext_len = encrypt_aes((unsigned char *)plaintext, strlen(plaintext), aes_key, iv, ciphertext);
 
     // Step 6: Decrypt the message using AES
     unsigned char decryptedtext[128];
     int decryptedtext_len = decrypt_aes(ciphertext, ciphertext_len, aes_key, iv, decryptedtext);
     decryptedtext[decryptedtext_len] = '\0';  // Null-terminate the decrypted text
 
-    // Step 7: Print the decrypted message
-    printf("Decrypted message: %s\n", decryptedtext);
-
-    // Step 8: Evolve the AES key over time using salt
+    // Step 7: Evolve the AES key over time using salt
     unsigned char salt[NONCE_LEN];
     generate_random_bytes(salt, NONCE_LEN);
     evolve_key(aes_key, AES_KEYLEN, salt);
 
-    // Step 9: Free resources
+    // Step 8: Free resources
     EVP_PKEY_free(alice_keypair);
     EVP_PKEY_free(bob_keypair);
     EVP_PKEY_free(params);  // Free the shared DH parameters
