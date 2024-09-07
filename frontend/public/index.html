@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure Messaging</title>
+</head>
+<body>
+  <h1>Secure Messaging App</h1>
+  <input type="text" id="message" placeholder="Enter message">
+  <button onclick="sendMessage()">Send Message</button>
+
+  <script>
+    async function sendMessage() {
+      const message = document.getElementById('message').value;
+
+      // Call the backend to encrypt the message
+      const response = await fetch('/encrypt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, key: 'shared-secret' })
+      });
+
+      const data = await response.json();
+      alert(`Encrypted message: ${data.encrypted}`);
+    }
+  </script>
+</body>
+</html>

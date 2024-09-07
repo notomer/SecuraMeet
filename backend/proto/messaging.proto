@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+service SecureMessaging {
+  rpc ExchangePublicKeys (PublicKeyRequest) returns (PublicKeyResponse);
+  rpc SendMessage (EncryptedMessage) returns (MessageAck);
+}
+
+message PublicKeyRequest {
+  string client_id = 1;
+}
+
+message PublicKeyResponse {
+  string public_key = 1;
+}
+
+message EncryptedMessage {
+  string client_id = 1;
+  string encrypted_message = 2;
+}
+
+message MessageAck {
+  bool success = 1;
+}
